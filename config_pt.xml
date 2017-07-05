@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+	<name>maxipago</name>
+	<displayName><![CDATA[maxiPago!]]></displayName>
+	<version><![CDATA[0.1.0]]></version>
+	<description><![CDATA[Receba pagamentos com maxiPago! usando Cart&atilde;o de Cr&eacute;dito e Boleto Banc&aacute;rio!]]></description>
+	<author><![CDATA[maxiPago!]]></author>
+	<tab><![CDATA[payments_gateways]]></tab>
+	<confirmUninstall><![CDATA[Tem certeza que deseja remover o maxiPago!?]]></confirmUninstall>
+	<is_configurable>1</is_configurable>
+	<need_instance>1</need_instance>
+	<limited_countries></limited_countries>
+</module>
