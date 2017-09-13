@@ -117,6 +117,21 @@
                               method="post">
 
                             <input name="method" id="method_boleto" type="hidden" value="boleto"/>
+
+
+                            <div class="required mp-row {if $billing_cpf } mp-hide {/if}">
+                                <div class="mp-col-2">
+                                    <label class="mp-label" for="payment-boleto-cpf">{l s='CPF' mod='maxipago'}: </label>
+                                </div>
+                                <div class="mp-col-10">
+                                    <div>
+                                        <div class="mp-col-3 required">
+                                            <input type="text" name="payment-boleto-cpf" id="cpf" value="{$billing_cpf}" class="form-control cpf-mask"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </form>
                     </div>
                 </div>

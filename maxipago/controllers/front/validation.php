@@ -131,6 +131,8 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
             $boletoBank = $isSandbox ? 12 : Configuration::get('MAXIPAGO_BOLETO_BANK');
             $ipAddress = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null;
 
+            $cpf = Tools::getValue('payment-boleto-cpf');
+
             $address = $this->_getAddress($cart);
             $customer = new Customer($cart->id_customer);
 
@@ -141,6 +143,7 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
                 'processorID' => $boletoBank, //Bank Number
                 'ipAddress' => $ipAddress,
                 'chargeTotal' => $totalOrder,
+                'customerIdExt' => $cpf,
                 'expirationDate' => $expirationDate,
                 'number' => $orderId, //Our Number
                 'instructions' => $instructions, //Instructions
