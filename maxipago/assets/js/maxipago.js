@@ -68,67 +68,10 @@ function verifyMaxipagoCC(ccNumber) {
     }
 }
 
-var ccSaveSelected = '0';
-function selectCCSaved(obj, cc_type, maxipago_cc_token) {
-    var entity = obj.id.replace('ccEntity', '');
-
-    document.getElementById('mpEntityId').value = maxipago_cc_token;
-    document.getElementById('mpCCType').value = cc_type;
-    document.getElementById('mpPaymentMethod').value = cc_type;
-
-    obj.className = 'mpPaymentMethod mpPaymentCCSave mpPaymentCCSaveSelected';
-    console.log('ccSaveSelected: ' + ccSaveSelected);
-    console.log('entity: ' + entity);
-    if (ccSaveSelected != '0' && entity != ccSaveSelected) {
-        document.getElementById('ccEntity' + ccSaveSelected).className = 'mpPaymentMethod mpPaymentCCSave';
-    }
-    ccSaveSelected = entity;
-}
-
-function addNewCardMaxiPago(code) {
-    clearCreditCard(code);
-    document.getElementById('selectCreditCardMp').style.display = 'none';
-    document.getElementById('newCreditCardMp').style.display = 'block';
-    document.getElementById('displayCcInfo').style.display = 'block';
-}
-
-function selectCardMaxiPago(code) {
-    clearCreditCard(code);
-    document.getElementById('selectCreditCardMp').style.display = 'block';
-    document.getElementById('newCreditCardMp').style.display = 'none';
-    document.getElementById('displayCcInfo').style.display = 'none';
-}
-
-function clearCreditCard(code) {
-    document.getElementById('mpPaymentFlagVI').className = 'mpPaymentFlag mpPaymentFlagVI'
-    document.getElementById('mpPaymentFlagMC').className = 'mpPaymentFlag mpPaymentFlagMC'
-    document.getElementById('mpPaymentFlagDC').className = 'mpPaymentFlag mpPaymentFlagDC'
-    document.getElementById('mpPaymentFlagAM').className = 'mpPaymentFlag mpPaymentFlagAM'
-    document.getElementById('mpPaymentFlagELO').className = 'mpPaymentFlag mpPaymentFlagELO'
-    document.getElementById('mpPaymentFlagDI').className = 'mpPaymentFlag mpPaymentFlagDI'
-    document.getElementById('mpPaymentFlagHC').className = 'mpPaymentFlag mpPaymentFlagHC'
-    document.getElementById('mpEntityId').value = '';
-    document.getElementById('mpCCType').value = '';
-    document.getElementById('mpPaymentMethod').value = '';
-    document.getElementById(code + '_cc_owner').value = '';
-    document.getElementById(code + '_cc_number').value = '';
-    document.getElementById(code + '_expiration').value = '0';
-    document.getElementById(code + '_expiration_yr').value = '0';
-    document.getElementById(code + '_cc_cid').value = '';
-    if (ccSaveSelected != '0') {
-        document.getElementById('ccEntity' + ccSaveSelected).className = 'mpPaymentMethod mpPaymentCCSave';
-        ccSaveSelected = '0';
-    }
-}
-
-var errorMessage;
-var id_charge = 0;
-var active = 0;
-
 var maxipago = {
     load: function() {
         var self = this;
-        $('.cpf-mask').mask('000.000.000-00', {
+        jQuery('.cpf-mask').mask('000.000.000-00', {
             onComplete: function(val, e, field, options) {
                 if (!self.verifyCPF(val)) {
                     self.showError('CPF inválido. Digite novamente.');
@@ -153,15 +96,73 @@ var maxipago = {
         });
 
         jQuery('.checkout-footer #button-boleto button').click(function(){
-           jQuery('#boleto-form').submit();
+            if (self.validateTicketFields()) {
+                jQuery('#boleto-form').submit();
+            }
         });
 
         jQuery('.checkout-footer #button-card button').click(function(){
-           jQuery('#card-form').submit();
+            if (self.validateCardFields()) {
+                jQuery('#card-form').submit();
+            }
         });
 
         jQuery('.checkout-footer #button-tef button').click(function(){
-           jQuery('#tef-form').submit();
+            if (self.validateEftFields()) {
+                jQuery('#tef-form').submit();
+            }
+        });
+
+        //Clear Fields
+        jQuery('input[name="payment-card-brand"]').click(function(){
+            self.clearError('.mp-card-brand-selector');
+        });
+
+        jQuery('#payment-card-number').focus(function(){
+            self.clearError('#payment-card-number');
+        });
+
+        jQuery('#payment-card-owner').focus(function(){
+            self.clearError('#payment-card-owner');
+        });
+
+        jQuery('#payment-card-expiration-month').focus(function(){
+            self.clearError('#payment-card-expiration-month');
+            self.clearError('#uniform-payment-card-expiration-month');
+        });
+
+        jQuery('#payment-card-expiration-year').focus(function(){
+            self.clearError('#payment-card-expiration-year');
+            self.clearError('#uniform-payment-card-expiration-year');
+        });
+
+        jQuery('#payment-card-cvv').focus(function(){
+            self.clearError('#payment-card-cvv');
+        });
+
+        jQuery('#payment-card-cvv-saved').focus(function(){
+            self.clearError('#payment-card-cvv-saved');
+        });
+
+        jQuery('#payment-card-cpf').focus(function(){
+            self.clearError('#payment-card-cpf');
+        });
+
+        jQuery('#payment-card-installments').focus(function(){
+            self.clearError('#payment-card-installments');
+            self.clearError('#uniform-payment-card-installments');
+        });
+
+        jQuery('#payment-boleto-cpf').focus(function(){
+            self.clearError('#payment-boleto-cpf');
+        });
+
+        jQuery('input[name="payment-tef-bank"]').click(function(){
+            self.clearError('.mp-eft-bank-selector');
+        });
+
+        jQuery('#payment-tef-cpf').focus(function(){
+            self.clearError('#payment-tef-cpf');
         });
 
         self.changeSavedCard();
@@ -208,40 +209,104 @@ var maxipago = {
     },
 
     validateCardFields: function() {
-        errorMessage = '';
-        if (!(this.verifyCPF($('#input-payment-card-cpf').val()))) {
-            errorMessage = 'O CPF digitado é inválido.';
-        } else if ($('input[name=input-payment-card-brand]:checked', '#payment-card-form').val()=="") {
-            errorMessage = 'Selecione a bandeira do cartão de crédito.';
-        } else if ($('#input-payment-card-installments').val()=="") {
-            errorMessage = 'Selecione a quantidade de parcelas que deseja.';
-        } else if ($('#input-payment-card-number').val()=="") {
-            errorMessage = 'Digite o número do cartão de crédito.';
-        } else if ($('#input-payment-card-cvv').val()=="") {
-            errorMessage = 'Digite o código de segurança do cartão de crédito.';
-        } else if ($('#input-payment-card-expiration-month').val()=="" || $('#input-payment-card-expiration-year').val()=="") {
-            errorMessage = 'Digite os dados de validade do cartão de crédito.';
-        }
 
-        if (errorMessage!='') {
-            this.showError(errorMessage);
-            $('#mp-pay-card-button').prop("disabled",false);
-            return false;
+        var self = this;
+        var validated = true;
+
+        //New card
+        if (jQuery('#payment-card-saved').val() == '') {
+
+            if (jQuery('input[name="payment-card-brand"]:checked').length == 0) {
+                self.showError('.mp-card-brand-selector');
+                validated = false;
+            }
+
+            if (jQuery('#payment-card-number').val() == "") {
+                self.showError('#payment-card-number');
+                validated = false;
+            }
+
+            if (jQuery('#payment-card-owner').val() == "") {
+                self.showError('#payment-card-owner');
+                validated = false;
+            }
+
+            if (jQuery('#payment-card-expiration-month').val() == "") {
+                self.showError('#payment-card-expiration-month');
+                self.showError('#uniform-payment-card-expiration-month');
+                validated = false;
+            }
+
+            if (jQuery('#payment-card-expiration-year').val() == "") {
+                self.showError('#payment-card-expiration-year');
+                self.showError('#uniform-payment-card-expiration-year');
+                validated = false;
+            }
+
+            if (jQuery('#payment-card-cvv').val() == "") {
+                self.showError('#payment-card-cvv');
+                validated = false;
+            }
         } else {
-            return true;
+            //savedCard
+            if (jQuery('#payment-card-cvv-saved').val() == "") {
+                self.showError('#payment-card-cvv-saved');
+                validated = false;
+            }
+
         }
+
+        if (!(this.verifyCPF(jQuery('#payment-card-cpf').val()))) {
+            self.showError('#payment-card-cpf');
+            validated = false;
+        }
+
+        if (jQuery('#payment-card-installments').val() == "") {
+            self.showError('#payment-card-installments');
+            self.showError('#uniform-payment-card-installments');
+            validated = false;
+        }
+
+        return validated;
     },
 
-    showError: function(message) {
-        if (!$('#wc-maxipago-messages').is(":visible")) {
-            $('#wc-maxipago-messages').slideDown();
+    validateEftFields: function() {
+        var self = this;
+        var validated = true;
+
+        if (jQuery('input[name="payment-tef-bank"]:checked').length == 0) {
+            self.showError('.mp-eft-bank-selector');
+            validated = false;
         }
-        this.scrollToTop();
-        jQuery("#wc-maxipago-messages").html(message)
+
+        if (!(this.verifyCPF(jQuery('#payment-tef-cpf').val()))) {
+            self.showError('#payment-tef-cpf');
+            validated = false;
+        }
+
+        return validated;
+
     },
 
-    hideError: function() {
-        $('#wc-maxipago-messages').slideUp();
+    validateTicketFields: function() {
+        var self = this;
+        var validated = true;
+
+        if (!(this.verifyCPF(jQuery('#payment-boleto-cpf').val()))) {
+            self.showError('#payment-boleto-cpf');
+            validated = false;
+        }
+
+        return validated;
+
+    },
+
+    showError: function(selector) {
+        jQuery(selector).css('border', '1px solid #f00');
+    },
+
+    clearError: function(selector) {
+        jQuery(selector).css('border', '1px solid #d6d4d4');
     },
 
     verifyCPF: function(cpf) {
@@ -295,20 +360,16 @@ var maxipago = {
     },
 
     changeSavedCard: function() {
-        $('#payment-card-saved').change(function(){
-            var desc = $(this).val();
+        jQuery('#payment-card-saved').change(function(){
+            var desc = jQuery(this).val();
             if (desc) {
-                $('.saved-cards .remove').show();
-                $('#card-data .new-card').hide();
+                jQuery('.saved-cards .remove').show();
+                jQuery('#card-data .new-card').hide();
             } else {
-                $('.saved-cards .remove').hide();
-                $('#card-data .new-card').show();
+                jQuery('.saved-cards .remove').hide();
+                jQuery('#card-data .new-card').show();
             }
         });
-    },
-
-    scrollToTop: function() {
-        $("html, body").animate({ scrollTop: $("#wc-maxipago-messages").offset().top-80 }, "slow");
     }
 
 }

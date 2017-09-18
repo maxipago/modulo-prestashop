@@ -102,17 +102,21 @@
     font-size: 14px;
 }
 
+.mp-eft-bank-selector > div,
 .mp-card-brand-selector > div{
     margin: 0 3px;
 }
+.mp-eft-bank-selector input,
 .mp-card-brand-selector input {
     margin: 0;
     padding: 0;
 }
+.mp-eft-bank-selector input:active,
 .mp-card-brand-selector input:active{
     opacity: .9;
 }
 
+.mp-eft-bank-selector input:checked + img,
 .mp-card-brand-selector input:checked + img {
     -webkit-filter: none;
     -moz-filter: none;

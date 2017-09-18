@@ -161,7 +161,7 @@ class Maxipago extends PaymentModule
     {
         $this->name = 'maxipago';
         $this->tab = 'payments_gateways';
-        $this->version = '0.1.0';
+        $this->version = '0.2.0';
         $this->author = 'maxiPago!';
         $this->controllers = array('payment', 'validation');
         $this->is_eu_compatible = 1;

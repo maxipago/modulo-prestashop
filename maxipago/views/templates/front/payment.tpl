@@ -126,7 +126,7 @@
                                 <div class="mp-col-10">
                                     <div>
                                         <div class="mp-col-3 required">
-                                            <input type="text" name="payment-boleto-cpf" id="cpf" value="{$billing_cpf}" class="form-control cpf-mask"/>
+                                            <input type="text" name="payment-boleto-cpf" id="payment-boleto-cpf" value="{$billing_cpf}" class="form-control cpf-mask"/>
                                         </div>
                                     </div>
                                 </div>
@@ -502,7 +502,7 @@
                                                 {l s='Selecione o Banco' mod='maxipago'}
                                             </label>
                                             <div>
-                                                <div class="mp-card-brand-selector">
+                                                <div class="mp-eft-bank-selector">
 
                                                     {foreach $tef_banks as $bankCode => $bank}
                                                         <div class="pull-left">
@@ -529,7 +529,7 @@
                                         <div class="mp-col-10">
                                             <div>
                                                 <div class="mp-col-3 required">
-                                                    <input type="text" name="payment-tef-cpf" id="cpf" value="{$billing_cpf}" class="form-control cpf-mask"/>
+                                                    <input type="text" name="payment-tef-cpf" id="payment-tef-cpf" value="{$billing_cpf}" class="form-control cpf-mask"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -542,9 +542,8 @@
                 </div>
             </div>
         {/if}
-
-
     </div>
+
     <div class="checkout-footer">
         <div class="pull-left">
             <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html'}" class="button-exclusive btn btn-default">

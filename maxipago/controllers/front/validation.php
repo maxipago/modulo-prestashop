@@ -278,8 +278,12 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
                             'firstName' => $customer->firstname,
                             'lastName' => $customer->lastname
                         );
+
                         $this->module->getMaxipago()->addProfile($customerData);
+                        $this->_saveTransaction('add_profile', $customerData, $this->module->getMaxipago()->response, null, false);
+
                         $mpCustomerId = $this->module->getMaxipago()->getCustomerId();
+
                     } else {
                         $mpCustomerId = $mpCustomer['id_customer_maxipago'];
                     }
@@ -328,9 +332,7 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
 
             if (Configuration::get('MAXIPAGO_CC_PROCESSING_TYPE') == 'auth') {
                 $this->module->getMaxipago()->creditCardAuth($data);
-
                 //pending
-
             } else {
                 $this->module->getMaxipago()->creditCardSale($data);
             }
@@ -488,6 +490,14 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
 
             if (isset($request['number'])) {
                 $request['number'] = substr($request['number'], 0, 6) . 'XXXXXX' . substr($request['number'], -4, 4);
+            }
+
+            if (isset($request['creditCardNumber'])) {
+                $request['creditCardNumber'] = substr($request['creditCardNumber'], 0, 6) . 'XXXXXX' . substr($request['creditCardNumber'], -4, 4);
+            }
+
+            if (isset($request['cvv'])) {
+                $request['cvv'] = 'XXX';
             }
 
             if (Tools::getValue('payment-card-brand')) {
