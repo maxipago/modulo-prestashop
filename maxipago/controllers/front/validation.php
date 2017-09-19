@@ -324,7 +324,7 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
                         ';
 
                         if (!Db::getInstance()->Execute($sql)) {
-                            die('maxiPago! Não foi possível salvar o cartão de crédito.');
+                            die('mP! Não foi possível salvar o cartão de crédito.');
                         }
                     }
                 }
@@ -525,13 +525,21 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
         $this->module->log($return);
 
         $sql = 'INSERT INTO `' . _DB_PREFIX_ . 'maxipago_transactions` 
-                    (`id_order`, `boleto_url`, `online_debit_url`, `method`, `request`, `return`, `response_message`)
-                VALUES
-                    ("' . pSQL($id_order) . '", "' . pSQL($boletoUrl) . '",  "' . pSQL($onlineDebitUrl) . '", "' . pSQL($method) . '" ,"' . pSQL($request) . '", "' . pSQL($return) . '", "' . $responseMessage . '" )
-                ';
+                    (`id_order`, `boleto_url`, `online_debit_url`, `method`, `request`, `return`, `response_message`, `created_at`)
+                VALUES 
+                    (
+                        "' . pSQL($id_order) . '", 
+                        "' . pSQL($boletoUrl) . '",  
+                        "' . pSQL($onlineDebitUrl) . '", 
+                        "' . pSQL($method) . '" ,
+                        "' . pSQL($request) . '", 
+                        "' . pSQL($return) . '", 
+                        "' . $responseMessage . '", 
+                        "' . date('Y-m-d H:i:s'). '" 
+                    );';
 
         if (! Db::getInstance()->Execute($sql)) {
-            die('maxiPago! Não foi possível salvar o cartão de crédito.');
+            die('mP! Não foi possível salvar a transação devido a um erro.');
         }
     }
 }

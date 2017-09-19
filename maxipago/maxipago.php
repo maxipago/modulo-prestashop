@@ -31,7 +31,7 @@ if (!defined('_PS_VERSION_'))
 class Maxipago extends PaymentModule
 {
 
-    public $maxiPagoVersion = '0.2.0';
+    public $maxiPagoVersion = '0.2.1';
     public $details;
     public $owner;
     public $address;
@@ -161,7 +161,7 @@ class Maxipago extends PaymentModule
     {
         $this->name = 'maxipago';
         $this->tab = 'payments_gateways';
-        $this->version = '0.2.0';
+        $this->version = '0.2.1';
         $this->author = 'maxiPago!';
         $this->controllers = array('payment', 'validation');
         $this->is_eu_compatible = 1;
@@ -329,7 +329,7 @@ class Maxipago extends PaymentModule
               `request` TEXT NOT NULL ,
               `return` TEXT NOT NULL ,
               `response_message` VARCHAR(255) NOT NULL,
-              `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+              `created_at` DATETIME,
               PRIMARY KEY  (`id`)
             ) ENGINE=' . _MYSQL_ENGINE_ .
             ' DEFAULT CHARSET=utf8';

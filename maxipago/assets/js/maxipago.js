@@ -76,7 +76,7 @@ var maxipago = {
                 if (!self.verifyCPF(val)) {
                     self.showError('CPF inválido. Digite novamente.');
                 } else {
-                    self.hideError();
+                    self.clearError('#payment-card-cpf');
                 }
             },
             placeholder: "___.___.___-__"
