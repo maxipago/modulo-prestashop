@@ -286,11 +286,6 @@ class Maxipago extends PaymentModule
                     $order_state->template[$language['id_lang']] = $state['template'];
                 }
 
-                if ($key == 'new') {
-                    $this->_copyMailTo($state['template'], $language['iso_code'], 'html');
-                    $this->_copyMailTo($state['template'], $language['iso_code'], 'txt');
-                }
-
             }
 
             if ($continue) {
