@@ -135,6 +135,7 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
             $cpf = Tools::getValue('payment-boleto-cpf');
 
             $address = $this->_getAddress($cart);
+            $sAddress = $this->_getAddress($cart, 'delivery');
             $customer = new Customer($cart->id_customer);
 
             $orderId = (string) $this->module->currentOrder;
@@ -154,8 +155,16 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
                 'bcity' => $address['city'],
                 'bstate' => $address['state'],
                 'bpostalcode' => $address['postcode'],
-                'bcountry' => $address['postcode'],
                 'bemail' => $customer->email,
+                'bcountry' => 'BR',
+                'sname' => $customer->firstname . ' ' . $customer->lastname . ' ' . $cpf,
+                'saddress' => $sAddress['address1'],
+                'saddress2' => $sAddress['address2'],
+                'scity' => $sAddress['city'],
+                'sstate' => $sAddress['state'],
+                'spostalcode' => $sAddress['postcode'],
+                'scountry' => 'BR',
+                'semail' => $customer->email
             );
 
             $this->module->getMaxipago()->boletoSale($data);
@@ -202,7 +211,11 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
             $installments = Tools::getValue('payment-card-installments');
             $owner = Tools::getValue('payment-card-owner');
             $brand = Tools::getValue('payment-card-brand');
-            $ipAddress = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null;
+            $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+
+            $address = $this->_getAddress($cart);
+            $sAddress = $this->_getAddress($cart, 'delivery');
+            $customer = new Customer($cart->id_customer);
 
             if ($interestRate && $installments > $maxWithoutInterest) {
                 $hasInterest = 'Y';
@@ -233,7 +246,24 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
                     'currencyCode' => $this->context->currency->iso_code,
                     'chargeTotal' => $totalOrder,
                     'numberOfInstallments' => $installments,
-                    'chargeInterest' => $hasInterest
+                    'chargeInterest' => $hasInterest,
+                    'customerIdExt' => $cpf,
+                    'bname' => $customer->firstname . ' ' . $customer->lastname,
+                    'baddress' => $address['address1'],
+                    'baddress2' => $address['address2'],
+                    'bcity' => $address['city'],
+                    'bstate' => $address['state'],
+                    'bpostalcode' => $address['postcode'],
+                    'bcountry' => 'BR',
+                    'bemail' => $customer->email,
+                    'sname' => $customer->firstname . ' ' . $customer->lastname . ' ' . $cpf,
+                    'saddress' => $sAddress['address1'],
+                    'saddress2' => $sAddress['address2'],
+                    'scity' => $sAddress['city'],
+                    'sstate' => $sAddress['state'],
+                    'spostalcode' => $sAddress['postcode'],
+                    'scountry' => 'BR',
+                    'semail' => $customer->email
                 );
 
             } else {
@@ -248,6 +278,7 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
                 $saveCard = Tools::getValue('payment-card-save');
 
                 $address = $this->_getAddress($cart);
+                $sAddress = $this->_getAddress($cart, 'delivery');
                 $customer = new Customer($cart->id_customer);
 
                 $data = array(
@@ -262,7 +293,24 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
                     'currencyCode' => $this->context->currency->iso_code,
                     'chargeTotal' => $totalOrder,
                     'numberOfInstallments' => $installments,
-                    'chargeInterest' => $hasInterest
+                    'chargeInterest' => $hasInterest,
+                    'customerIdExt' => $cpf,
+                    'bname' => $customer->firstname . ' ' . $customer->lastname,
+                    'baddress' => $address['address1'],
+                    'baddress2' => $address['address2'],
+                    'bcity' => $address['city'],
+                    'bstate' => $address['state'],
+                    'bpostalcode' => $address['postcode'],
+                    'bcountry' => 'BR',
+                    'bemail' => $customer->email,
+                    'sname' => $customer->firstname . ' ' . $customer->lastname . ' ' . $cpf,
+                    'saddress' => $sAddress['address1'],
+                    'saddress2' => $sAddress['address2'],
+                    'scity' => $sAddress['city'],
+                    'sstate' => $sAddress['state'],
+                    'spostalcode' => $sAddress['postcode'],
+                    'scountry' => 'BR',
+                    'semail' => $customer->email
                 );
 
                 if ($saveCard) {
@@ -309,7 +357,7 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
                         'billingPhone' => $address['phone'],
                         'billingEmail' => $customer->email,
                         'onFileEndDate' => $endDate,
-                        'onFilePermissions' => 'ongoing',
+                        'onFilePermissions' => 'ongoing'
                     );
                     $this->module->getMaxipago()->addCreditCard($ccData);
                     $token = $this->module->getMaxipago()->getToken();
@@ -367,6 +415,7 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
             $ipAddress = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null;
 
             $address = $this->_getAddress($cart);
+            $sAddress = $this->_getAddress($cart, 'delivery');
             $customer = new Customer($cart->id_customer);
 
             $data = array(
@@ -375,14 +424,30 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
                 'ipAddress' => $ipAddress,
                 'chargeTotal' => $totalOrder,
                 'customerIdExt' => $cpf,
-                'name' => $customer->firstname . ' ' . $customer->lastname,
+                'name' => $customer->firstname . ' ' . $customer->lastname . ' ' . $cpf,
                 'address' => $address['address1'], //Address 1
                 'address2' => $address['address2'], //Address 2
                 'city' => $address['city'],
                 'state' => $address['state'],
                 'postalcode' => $address['postcode'],
-                'country' => $address['country'],
-                'parametersURL' => 'oid=' . $this->module->currentOrder
+                'country' => 'BR',
+                'parametersURL' => 'oid=' . $this->module->currentOrder,
+                'bname' => $customer->firstname . ' ' . $customer->lastname,
+                'baddress' => $address['address1'],
+                'baddress2' => $address['address2'],
+                'bcity' => $address['city'],
+                'bstate' => $address['state'],
+                'bpostalcode' => $address['postcode'],
+                'bcountry' => 'BR',
+                'bemail' => $customer->email,
+                'sname' => $customer->firstname . ' ' . $customer->lastname . ' - ' . $cpf,
+                'saddress' => $sAddress['address1'],
+                'saddress2' => $sAddress['address2'],
+                'scity' => $sAddress['city'],
+                'sstate' => $sAddress['state'],
+                'spostalcode' => $sAddress['postcode'],
+                'scountry' => 'BR',
+                'semail' => $customer->email
             );
 
             $this->module->getMaxipago()->onlineDebitSale($data);
@@ -404,31 +469,35 @@ class MaxipagoValidationModuleFrontController extends ModuleFrontController
 
     }
 
-    protected function _getAddress($cart)
+    protected function _getAddress($cart, $type = 'invoice')
     {
-        $invoiceAddress = new Address((int) $cart->id_address_invoice);
+        $address = new Address((int) $cart->id_address_invoice);
 
-        $address2 = $invoiceAddress->address2;
-        if (property_exists($invoiceAddress, 'address3')) {
-            $address2 .= ' ' . $invoiceAddress->address3;
+        if ($type == 'delivery') {
+            $deliveryAddress = new Address((int)$cart->id_address_delivery);
         }
-        if (property_exists($invoiceAddress, 'address4')) {
-            $address2 .= ' ' . $invoiceAddress->address4;
+
+        $address2 = $address->address2;
+        if (property_exists($address, 'address3')) {
+            $address2 .= ' ' . $address->address3;
+        }
+        if (property_exists($address, 'address4')) {
+            $address2 .= ' ' . $address->address4;
         }
 
         $state = "";
         if (isset($address->id_state)) {
-            $state = State::getNameById($invoiceAddress->id_state);
+            $state = State::getNameById($address->id_state);
         }
 
         return array(
-            'address1' => $invoiceAddress->address1,
+            'address1' => $address->address1,
             'address2' => $address2,
             'state' => $state,
-            'city' => $invoiceAddress->city,
-            'postcode' => $invoiceAddress->postcode,
-            'country' => $invoiceAddress->country,
-            'phone' => $invoiceAddress->phone,
+            'city' => $address->city,
+            'postcode' => $address->postcode,
+            'country' => $address->country,
+            'phone' => $address->phone,
         );
     }
 
