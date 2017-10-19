@@ -490,10 +490,14 @@ class Maxipago extends PaymentModule
 
             $searchStatues = array(
                 '"BOLETO ISSUED"',
+                '"ISSUED"',
                 '"BOLETO VIEWED"',
+                '"VIEWED"',
                 '"PENDING"',
                 '"PENDING CONFIRMATION"',
-                '"AUTHORIZED"'
+                '"AUTHORIZED"',
+                '"FRAUD"',
+                '"FRAUD REVIEW"'
             );
 
             $date = new DateTime('-15 DAYS'); // first argument uses strtotime parsing
