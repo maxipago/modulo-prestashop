@@ -2,7 +2,7 @@
 <module>
     <name>maxipago</name>
     <displayName><![CDATA[maxiPago!]]></displayName>
-    <version><![CDATA[0.2.1]]></version>
+    <version><![CDATA[0.2.2]]></version>
     <description><![CDATA[Receive payments with "Boleto Bancario", Credit Card and EFT (TEF) using maxiPago!]]></description>
     <author><![CDATA[maxiPago!]]></author>
     <tab><![CDATA[payments_gateways]]></tab>

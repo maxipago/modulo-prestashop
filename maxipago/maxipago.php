@@ -31,7 +31,7 @@ if (!defined('_PS_VERSION_'))
 class Maxipago extends PaymentModule
 {
 
-    public $maxiPagoVersion = '0.2.1';
+    public $maxiPagoVersion = '0.2.2';
     public $details;
     public $owner;
     public $address;
@@ -161,7 +161,7 @@ class Maxipago extends PaymentModule
     {
         $this->name = 'maxipago';
         $this->tab = 'payments_gateways';
-        $this->version = '0.2.1';
+        $this->version = $this->maxiPagoVersion;
         $this->author = 'maxiPago!';
         $this->controllers = array('payment', 'validation');
         $this->is_eu_compatible = 1;
@@ -496,7 +496,7 @@ class Maxipago extends PaymentModule
                 '"PENDING"',
                 '"PENDING CONFIRMATION"',
                 '"AUTHORIZED"',
-                '"FRAUD"',
+                '"REVIEW"',
                 '"FRAUD REVIEW"'
             );
 
@@ -506,7 +506,7 @@ class Maxipago extends PaymentModule
             $sql = 'SELECT *
                     FROM ' . _DB_PREFIX_ . 'maxipago_transactions
                     WHERE `created_at` > "' . pSQL($fromDate) . '" 
-                    AND `response_message` IN (' . implode(',', $searchStatues). ')
+                    AND UPPER(`response_message`) IN (' . implode(',', $searchStatues). ')
                     ';
             if ($id_order) {
                 $sql .= 'AND `id_order` = "' . pSQL($id_order) . '"';
